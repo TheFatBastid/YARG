@@ -1,8 +1,10 @@
-This is an out-of-channel beta for YARG + stage kit support
+This is an out-of-channel beta for YARG + stage kit support.
 
 The release is windows only.
 
 It should be able to work with any chart that YARG can load that has a Venue track.
+
+Made to mimic the offical stage kit lighting cues as closely as possible. Fixes some bugs and adjusts some timing slighty.
 
 Just be sure the kit is plugged in. No need to 'add a player' with the kit as the controller.
 
