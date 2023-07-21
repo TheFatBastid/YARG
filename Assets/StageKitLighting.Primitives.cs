@@ -157,5 +157,4 @@ namespace StageKitLighting {
 			}
 		}
 	}
->>>>>>> Stashed changes
 }

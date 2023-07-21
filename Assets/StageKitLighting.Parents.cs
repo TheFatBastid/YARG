@@ -96,6 +96,4 @@ namespace StageKitLighting{
 		    StageKitLightingController.Instance.OnEventReceive -= HandleEvent;
 	    }
     }
-
->>>>>>> Stashed changes
 }

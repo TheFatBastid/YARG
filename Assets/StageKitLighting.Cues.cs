@@ -745,5 +745,4 @@ namespace StageKitLighting {
 			new TimedPattern(patternList2, 2f);
 		}
 	}
->>>>>>> Stashed changes
 }
