@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using UnityEngine;
 using YARG.PlayMode;
 
 namespace StageKitLighting {
@@ -364,6 +365,17 @@ namespace StageKitLighting {
 
 		}
 	}
+    internal class Intro : StageKitLightingCues
+    {
+        public Intro()
+        {
+            Start();
+            new ManualPattern((YELLOW, NONE));
+            new ManualPattern((RED, NONE));
+            new ManualPattern((BLUE, NONE));
+            new ManualPattern((GREEN, ALL));
+        }
+    }
 	internal class FlareFast : StageKitLightingCues
     {
         private readonly StageKitLightingCues _thing = StageKitLightingController.Instance.CurrentLightingPattern;
@@ -400,8 +412,7 @@ namespace StageKitLighting {
 		public SilhouetteSpot()
         {
 			Start();
-
-			if (_thing?.ToString() ==  "StageKitLighting.Dischord")
+            if (_thing?.ToString() ==  "StageKitLighting.Dischord")
             {
 				new ManualPattern((RED,NONE));
 				new ManualPattern((YELLOW,NONE));
@@ -415,6 +426,10 @@ namespace StageKitLighting {
             {
                 //do nothing (for the chop suey ending at least)
 			}
+            else if (_thing?.ToString() == "StageKitLighting.Intro")
+            {
+                new ListenPattern(new List<(int, byte)>{(BLUE, ALL)}, StageKitLightingPrimitives.ListenTypes.RedFretDrums,true);
+            }
             else
             {
 				SetAllLedsOff();

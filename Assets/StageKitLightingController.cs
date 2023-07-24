@@ -370,6 +370,10 @@ namespace StageKitLighting {
 				    new Blackout();
 				    break;
 
+                case "venue_light_intro":
+                    new Intro();
+                    break;
+
 			    //Fog machine cues
 			    case "venue_fog_on":
                     SetFogMachine(FogState.On);
@@ -403,13 +407,16 @@ namespace StageKitLighting {
                 //Ignored cues
                 case "venue_lightFrame_next":     //these are handled in cues via their primitive calls
                 case "venue_lightFrame_previous": //no cue listens to this.
-                //In-game lighting calls we currently ignore but might do something with in an extended "funky fresh" mode or for songs with no venue track
+
+                //In-game lighting calls we currently ignore but might do something with in an extended "funky fresh" mode.
                 case "venue_light_verse":
                 case "venue_light_chorus":
+
                 case "venue_spotlight_guitar":
                 case "venue_spotlight_vocals":
                 case "venue_spotlight_drums":
                 case "venue_spotlight_bass":
+
                 case "venue_postProcess_contrast_a":
                 case "venue_postProcess_ProFilm_a":
                 case "venue_postProcess_photocopy":
@@ -417,9 +424,18 @@ namespace StageKitLighting {
                 case "venue_postProcess_video_trails":
                 case "venue_postProcess_video_bw":
                 case "venue_postProcess_film_16mm":
+                case "venue_postProcess_bright":
+                case "venue_postProcess_film_contrast_blue":
+                case "venue_postProcess_film_contrast_green":
+                case "venue_postProcess_film_contrast_red":
+                case "venue_postProcess_desat_blue":
+                case "venue_postProcess_bloom":
+                case "venue_postProcess_clean_trails":
+
                 case "venue_singalong_bassOrKeys":
                 case "venue_singalong_guitarOrKeys":
                 case "venue_singalong_drums":
+
                 case "venue_bonus_fx":
                     //Currently do nothing
 				    break;
