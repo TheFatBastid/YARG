@@ -24,6 +24,8 @@ namespace YARG.UI
         private int optionCount;
         private int selected;
 
+        public static event Action OnPauseEvent;
+
         private void Start()
         {
             foreach (var option in options)
@@ -159,6 +161,7 @@ namespace YARG.UI
             GameManager.AudioManager.UnloadSong();
             GameManager.Instance.LoadScene(SceneIndex.PLAY);
             Play.Instance.Paused = false;
+            OnPauseEvent?.Invoke();
         }
 
         private void OnSettingsSelected()

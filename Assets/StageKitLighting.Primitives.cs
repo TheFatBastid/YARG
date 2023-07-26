@@ -6,7 +6,7 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 
 namespace StageKitLighting {
-	internal class BeatPattern : StageKitLightingPrimitives
+	internal class BeatPattern : StageKitLighting
     {
 		private readonly bool _continuous;
 		private int _patternIndex;
@@ -14,7 +14,7 @@ namespace StageKitLighting {
 		private readonly List<(int, byte)> _patternList;
 
 		public BeatPattern(List<(int, byte)> patternList, bool continuous = true, float timesPerBeat = 1.0f) {
-			base.Start();
+			Start();
 			_continuous = continuous;
 			_patternList = patternList;
 			_noteTiming = timesPerBeat;
@@ -25,7 +25,7 @@ namespace StageKitLighting {
 				var stopwatch = new Stopwatch();
 				stopwatch.Start();
 
-				while (Loop == true)
+                while (!cancellationToken.IsCancellationRequested)
 				{
 					stopwatch.Restart(); // Restart the stopwatch for each iteration
 
@@ -57,7 +57,7 @@ namespace StageKitLighting {
 				}
 		}
     }
-	internal class ListenPattern : StageKitLightingPrimitives {
+	internal class ListenPattern : StageKitLighting {
 		private readonly ListenTypes _listenType;
 		private int _patternIndex;
 		private readonly List<(int, byte)> _patternList;
@@ -93,18 +93,24 @@ namespace StageKitLighting {
 			    ((_listenType & ListenTypes.YellowFretBass) == 0 || eventName != "bassFret_2") &&
 			    ((_listenType & ListenTypes.BlueFretBass) == 0 || eventName != "bassFret_3") &&
 			    ((_listenType & ListenTypes.OrangeFretBass) == 0 || eventName != "bassFret_4")
-			   ) return;
+			   )
+            {
+                return;
+            }
 
             StageKitLightingController.Instance.SetStrobeSpeed(StageKitLightingController.StrobeSpeed.Off);
 
-			if (_inverse) {
+			if (_inverse)
+            {
 				StageKitLightingController.Instance.SetLed(_patternList[_patternIndex].Item1, NONE);
-			} else {
+			}
+            else
+            {
 				StageKitLightingController.Instance.SetLed(_patternList[_patternIndex].Item1, _patternList[_patternIndex].Item2);
 			}
 
 			if (_flash) {
-				Flasher().Forget();
+				Flasher(CancellationTokenSource.Token).Forget();
 			}
 
 			_patternIndex++;
@@ -113,8 +119,8 @@ namespace StageKitLighting {
 			}
 		}
 
-		private async UniTask Flasher() {
-			await UniTask.Delay(TimeSpan.FromSeconds(0.5f / Play.Instance.CurrentBeatsPerSecond));
+		private async UniTask Flasher(CancellationToken cancellationToken) {
+			await UniTask.Delay(TimeSpan.FromSeconds(0.5f / Play.Instance.CurrentBeatsPerSecond), cancellationToken: cancellationToken);
 			if (_inverse) {
 				StageKitLightingController.Instance.SetLed(_patternList[_patternIndex].Item1, _patternList[_patternIndex].Item2);
 			} else {
@@ -124,28 +130,22 @@ namespace StageKitLighting {
 
 		}
 	}
-	internal class ManualPattern : StageKitLightingPrimitives {
-		public ManualPattern((int, byte) patternList) {
-			StageKitLightingController.Instance.SetLed(patternList.Item1, patternList.Item2);
-		}
-	}
-	internal class TimedPattern : StageKitLightingPrimitives
+    internal class TimedPattern : StageKitLighting
     {
 		private readonly float _seconds;
 		private int _patternIndex;
 		private readonly List<(int, byte)> _patternList;
-
-		public TimedPattern(List<(int, byte)> patternList,  float seconds)
+        public TimedPattern(List<(int, byte)> patternList,  float seconds)
         {
 			_seconds = seconds;
 			_patternList = patternList;
 			Start();
-			TimedCircleCoroutine().Forget();
-		}
+            TimedCircleCoroutine(CancellationTokenSource.Token).Forget();
+        }
 
-		private async UniTask TimedCircleCoroutine()
+		private async UniTask TimedCircleCoroutine(CancellationToken cancellationToken)
         {
-			while (Loop)
+            while (!cancellationToken.IsCancellationRequested)
             {
 				StageKitLightingController.Instance.SetLed(_patternList[_patternIndex].Item1, _patternList[_patternIndex].Item2);
 				await UniTask.Delay(TimeSpan.FromSeconds(_seconds / _patternList.Count));

@@ -1,19 +1,19 @@
 using System.Collections.Generic;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using YARG.PlayMode;
 
 namespace StageKitLighting {
-
     internal class BigRockEnding : StageKitLightingCues
     {
         public BigRockEnding()
         {
             Start();
-            new ManualPattern((RED, ALL));
-            new ManualPattern((BLUE, ALL));
-            new ManualPattern((GREEN, ALL));
-            new ManualPattern((YELLOW, ALL));
+            StageKitLightingController.Instance.SetLed(RED, ALL);
+            StageKitLightingController.Instance.SetLed(BLUE, ALL);
+            StageKitLightingController.Instance.SetLed(GREEN, ALL);
+            StageKitLightingController.Instance.SetLed(YELLOW, ALL);
             var patternList1 = new List<(int, byte)>
             {
                 (RED, ALL),
@@ -42,10 +42,10 @@ namespace StageKitLighting {
                 (BLUE, NONE),
                 (BLUE, ALL),
             };
-            new BeatPattern(patternList1, true, 8.0f);
-            new BeatPattern(patternList2, true, 8.0f);
-            new BeatPattern(patternList3, true, 8.0f);
-            new BeatPattern(patternList4, true, 8.0f);
+            CuePrimitives[0] = new BeatPattern(patternList1, true, 8.0f);
+            CuePrimitives[1] = new BeatPattern(patternList2, true, 8.0f);
+            CuePrimitives[2] = new BeatPattern(patternList3, true, 8.0f);
+            CuePrimitives[3] = new BeatPattern(patternList4, true, 8.0f);
         }
 
     }
@@ -54,8 +54,8 @@ namespace StageKitLighting {
         public LoopWarm()
         {
             Start();
-            new ManualPattern((GREEN,NONE));
-            new ManualPattern((BLUE,NONE));
+            StageKitLightingController.Instance.SetLed(GREEN,NONE);
+            StageKitLightingController.Instance.SetLed(BLUE,NONE);
 
             var patternList1 = new List<(int, byte)>
             {
@@ -64,7 +64,7 @@ namespace StageKitLighting {
                 (RED, TWO | SIX),
                 (RED, THREE | SEVEN),
             };
-            new BeatPattern(patternList1);
+            CuePrimitives[0] = new BeatPattern(patternList1);
 
             var patternList2 = new List<(int, byte)>
             {
@@ -77,18 +77,16 @@ namespace StageKitLighting {
                 (YELLOW, FOUR),
                 (YELLOW, THREE),
             };
-
-            new BeatPattern(patternList2);
+            CuePrimitives[1] = new BeatPattern(patternList2);
         }
-
     }
     internal class LoopCool : StageKitLightingCues
     {
         public LoopCool()
         {
             Start();
-            new ManualPattern((YELLOW,NONE));
-            new ManualPattern((RED,NONE));
+            StageKitLightingController.Instance.SetLed(YELLOW,NONE);
+            StageKitLightingController.Instance.SetLed(RED,NONE);
             var patternList1 = new List<(int, byte)>
             {
                 (BLUE, ZERO | FOUR),
@@ -96,7 +94,7 @@ namespace StageKitLighting {
                 (BLUE, TWO | SIX),
                 (BLUE, THREE | SEVEN),
             };
-            new BeatPattern(patternList1);
+            CuePrimitives[0] = new BeatPattern(patternList1);
 
             var patternList2 = new List<(int, byte)>
             {
@@ -109,8 +107,7 @@ namespace StageKitLighting {
                 (GREEN, FOUR),
                 (GREEN, THREE),
             };
-
-            new BeatPattern(patternList2);
+            CuePrimitives[1] = new BeatPattern(patternList2);
         }
     }
     internal class Harmony : StageKitLightingCues
@@ -145,8 +142,8 @@ namespace StageKitLighting {
                     (RED, SIX),
                     (RED, FIVE),
                 };
-                new ManualPattern((BLUE, NONE));
-                new ManualPattern((GREEN, NONE));
+                StageKitLightingController.Instance.SetLed(BLUE, NONE);
+                StageKitLightingController.Instance.SetLed(GREEN, NONE);
             }
             else
             {
@@ -174,12 +171,12 @@ namespace StageKitLighting {
                     (BLUE, THREE),
                 };
 
-                new ManualPattern((RED, NONE));
-                new ManualPattern((YELLOW, NONE));
+                StageKitLightingController.Instance.SetLed(RED, NONE);
+                StageKitLightingController.Instance.SetLed(YELLOW, NONE);
 
             }
-            new BeatPattern(patternList1, true, 1.0f);
-            new BeatPattern(patternList2, true, 1.0f);
+            CuePrimitives[0] = new BeatPattern(patternList1);
+            CuePrimitives[1] = new BeatPattern(patternList2);
         }
     }
     internal class Sweep : StageKitLightingCues
@@ -195,10 +192,10 @@ namespace StageKitLighting {
                     (RED, SIX | TWO), (RED, FIVE | ONE), (RED, FOUR | ZERO), (RED, THREE | SEVEN),
                 };
 
-                new ManualPattern((YELLOW, NONE));
-                new ManualPattern((BLUE, NONE));
-                new ManualPattern((GREEN, NONE));
-                new BeatPattern(patternList1);
+                StageKitLightingController.Instance.SetLed(YELLOW, NONE);
+                StageKitLightingController.Instance.SetLed(BLUE, NONE);
+                StageKitLightingController.Instance.SetLed(GREEN, NONE);
+                CuePrimitives[0] = new BeatPattern(patternList1);
             }
             else
             {
@@ -232,10 +229,10 @@ namespace StageKitLighting {
                     (GREEN, ZERO),
                 };
 
-                new ManualPattern((RED, NONE));
-                new BeatPattern(patternList1);
-                new BeatPattern(patternList2);
-                new BeatPattern(patternList3, true, 2.0f);
+                StageKitLightingController.Instance.SetLed(RED, NONE);
+                CuePrimitives[0] = new BeatPattern(patternList1);
+                CuePrimitives[1] = new BeatPattern(patternList2);
+                CuePrimitives[2] = new BeatPattern(patternList3, true, 2.0f);
             }
         }
     }
@@ -263,7 +260,7 @@ namespace StageKitLighting {
                     (YELLOW, NONE), (YELLOW, NONE), (YELLOW, NONE), (YELLOW, ALL),
                 };
 
-                new ManualPattern((GREEN, NONE));
+                StageKitLightingController.Instance.SetLed(GREEN, NONE);
             }
             else
             {
@@ -289,11 +286,11 @@ namespace StageKitLighting {
                     (BLUE, NONE),
                     (BLUE, SIX |  TWO),
                 };
-                new ManualPattern((YELLOW, NONE));
+                StageKitLightingController.Instance.SetLed(YELLOW, NONE);
             }
-            new BeatPattern(patternList1,true, 4.0f); //4 times a beats to control on and off because of the 2 different patterns on one color
-			new BeatPattern(patternList2,true, 4.0f);
-			new BeatPattern(patternList3,true, 4.0f);
+            CuePrimitives[0] = new BeatPattern(patternList1,true, 4.0f); //4 times a beats to control on and off because of the 2 different patterns on one color
+            CuePrimitives[1] = new BeatPattern(patternList2,true, 4.0f);
+            CuePrimitives[2] = new BeatPattern(patternList3,true, 4.0f);
         }
 	}
 	internal class SearchLight : StageKitLightingCues
@@ -331,7 +328,7 @@ namespace StageKitLighting {
                     (BLUE, TWO),
                     (BLUE, ONE),
                 };
-                new ManualPattern((RED, NONE));
+                StageKitLightingController.Instance.SetLed(RED, NONE);
             }
             else
             {
@@ -356,12 +353,12 @@ namespace StageKitLighting {
                     (RED, TWO),
                     (RED, ONE),
                 };
-                new ManualPattern((BLUE, NONE));
+                StageKitLightingController.Instance.SetLed(BLUE, NONE);
 
             }
-            new ManualPattern((GREEN, NONE));
-            new BeatPattern(patternList1,true,4.0f);
-            new BeatPattern(patternList2,true,4.0f);
+            StageKitLightingController.Instance.SetLed(GREEN, NONE);
+            CuePrimitives[0] = new BeatPattern(patternList1,true,4.0f);
+            CuePrimitives[1] = new BeatPattern(patternList2,true,4.0f);
 
 		}
 	}
@@ -369,11 +366,12 @@ namespace StageKitLighting {
     {
         public Intro()
         {
+            Debug.Log("shitbags");
             Start();
-            new ManualPattern((YELLOW, NONE));
-            new ManualPattern((RED, NONE));
-            new ManualPattern((BLUE, NONE));
-            new ManualPattern((GREEN, ALL));
+            StageKitLightingController.Instance.SetLed(YELLOW, NONE);
+            StageKitLightingController.Instance.SetLed(RED, NONE);
+            StageKitLightingController.Instance.SetLed(BLUE, NONE);
+            StageKitLightingController.Instance.SetLed(GREEN, ALL);
         }
     }
 	internal class FlareFast : StageKitLightingCues
@@ -381,27 +379,27 @@ namespace StageKitLighting {
         private readonly StageKitLightingCues _thing = StageKitLightingController.Instance.CurrentLightingPattern;
 		public FlareFast() {
             Start();
-            new ManualPattern((YELLOW,NONE));
-            new ManualPattern((RED,NONE));
+            StageKitLightingController.Instance.SetLed(YELLOW,NONE);
+            StageKitLightingController.Instance.SetLed(RED,NONE);
             if (_thing?.ToString() ==  "StageKitLighting.ManualCool" || _thing?.ToString() ==  "StageKitLighting.LoopCool")
             {
-                new ManualPattern((GREEN, ALL));
+                StageKitLightingController.Instance.SetLed(GREEN, ALL);
             }
             else
             {
-                new ManualPattern((GREEN,NONE));
+                StageKitLightingController.Instance.SetLed(GREEN,NONE);
             }
-            new ManualPattern((BLUE,ALL));
+            StageKitLightingController.Instance.SetLed(BLUE,ALL);
         }
 	}
     internal class FlareSlow : StageKitLightingCues
     {
         public FlareSlow() {
             Start();
-            new ManualPattern((BLUE,ALL));
-            new ManualPattern((YELLOW,ALL));
-            new ManualPattern((GREEN,ALL));
-            new ManualPattern((RED,ALL));
+            StageKitLightingController.Instance.SetLed(BLUE,ALL);
+            StageKitLightingController.Instance.SetLed(YELLOW,ALL);
+            StageKitLightingController.Instance.SetLed(GREEN,ALL);
+            StageKitLightingController.Instance.SetLed(RED,ALL);
         }
     }
 	internal class SilhouetteSpot : StageKitLightingCues
@@ -412,15 +410,16 @@ namespace StageKitLighting {
 		public SilhouetteSpot()
         {
 			Start();
+            Debug.Log(_thing);
             if (_thing?.ToString() ==  "StageKitLighting.Dischord")
             {
-				new ManualPattern((RED,NONE));
-				new ManualPattern((YELLOW,NONE));
-				new ManualPattern((BLUE,ONE|THREE|FIVE|SEVEN));
-				new ManualPattern((GREEN,ALL));
+				StageKitLightingController.Instance.SetLed(RED,NONE);
+				StageKitLightingController.Instance.SetLed(YELLOW,NONE);
+				StageKitLightingController.Instance.SetLed(BLUE,ONE|THREE|FIVE|SEVEN);
+				StageKitLightingController.Instance.SetLed(GREEN,ALL);
 				//if first vocal note after major beat ends toggle blue on and off
 				_nextVocalNoteEnd = StageKitLightingController.Instance.VocalsChart [StageKitLightingController.Instance.vocalsChartIndex].EndTime;
-				Update().Forget();
+                Update(CancellationTokenSource.Token).Forget();
 			}
             else if (_thing?.ToString() ==  "StageKitLighting.Stomp")
             {
@@ -428,11 +427,14 @@ namespace StageKitLighting {
 			}
             else if (_thing?.ToString() == "StageKitLighting.Intro")
             {
-                new ListenPattern(new List<(int, byte)>{(BLUE, ALL)}, StageKitLightingPrimitives.ListenTypes.RedFretDrums,true);
+                CuePrimitives[0] = new ListenPattern(new List<(int, byte)>{(BLUE, ALL)}, ListenTypes.RedFretDrums,true);
             }
             else
             {
-				SetAllLedsOff();
+                StageKitLightingController.Instance.SetLed(RED, NONE);
+                StageKitLightingController.Instance.SetLed(GREEN, NONE);
+                StageKitLightingController.Instance.SetLed(BLUE, NONE);
+                StageKitLightingController.Instance.SetLed(YELLOW, NONE);
 			}
 		}
 
@@ -440,20 +442,20 @@ namespace StageKitLighting {
         {
             if (eventName != "beatLine_major" || _thing?.ToString() !=  "StageKitLighting.Dischord") return;
             _nextVocalNoteEnd = StageKitLightingController.Instance.VocalsChart [StageKitLightingController.Instance.vocalsChartIndex].EndTime;
-            Update().Forget();
+            Update(CancellationTokenSource.Token).Forget();
         }
 
-		private async UniTask Update()
+		private async UniTask Update(CancellationToken cancellationToken)
 		{
-			while (Loop)
-			{
+            while (!cancellationToken.IsCancellationRequested)
+            {
 				if (Play.Instance.SongTime >= _nextVocalNoteEnd)
 				{
 					if (_blueOn) {
-						new ManualPattern((BLUE,NONE));
+						StageKitLightingController.Instance.SetLed(BLUE,NONE);
 						_blueOn = false;
 					} else {
-						new ManualPattern((BLUE,ONE|THREE|FIVE|SEVEN));
+						StageKitLightingController.Instance.SetLed(BLUE,ONE|THREE|FIVE|SEVEN);
 						_blueOn = true;
 					}
 					_nextVocalNoteEnd = Play.Instance.SongLength;
@@ -468,10 +470,10 @@ namespace StageKitLighting {
 		public Silhouettes()
         {
             Start();
-			new ManualPattern((GREEN,ALL));
-			new ManualPattern((YELLOW,NONE));
-			new ManualPattern((BLUE,NONE));
-			new ManualPattern((RED,NONE));
+			StageKitLightingController.Instance.SetLed(GREEN,ALL);
+			StageKitLightingController.Instance.SetLed(YELLOW,NONE);
+			StageKitLightingController.Instance.SetLed(BLUE,NONE);
+			StageKitLightingController.Instance.SetLed(RED,NONE);
 		}
 	}
 	internal class Blackout : StageKitLightingCues
@@ -479,10 +481,10 @@ namespace StageKitLighting {
 		public Blackout()
         {
             Start() ;
-            new ManualPattern((GREEN,NONE));
-			new ManualPattern((YELLOW,NONE));
-			new ManualPattern((BLUE,NONE));
-			new ManualPattern((RED,NONE));
+            StageKitLightingController.Instance.SetLed(GREEN,NONE);
+			StageKitLightingController.Instance.SetLed(YELLOW,NONE);
+			StageKitLightingController.Instance.SetLed(BLUE,NONE);
+			StageKitLightingController.Instance.SetLed(RED,NONE);
 		}
 	}
 	internal class ManualWarm : StageKitLightingCues
@@ -490,8 +492,8 @@ namespace StageKitLighting {
         public ManualWarm()
         {
             Start();
-            new ManualPattern((GREEN,NONE));
-            new ManualPattern((BLUE,NONE));
+            StageKitLightingController.Instance.SetLed(GREEN,NONE);
+            StageKitLightingController.Instance.SetLed(BLUE,NONE);
 
             var patternList1 = new List<(int, byte)>
             {
@@ -500,7 +502,7 @@ namespace StageKitLighting {
                 (RED, TWO | SIX),
                 (RED, THREE | SEVEN),
             };
-            new BeatPattern(patternList1);
+            CuePrimitives[0] = new BeatPattern(patternList1);
 
             var patternList2 = new List<(int, byte)>
             {
@@ -514,7 +516,8 @@ namespace StageKitLighting {
                 (YELLOW, THREE),
             };
 
-            new BeatPattern(patternList2);
+            CuePrimitives[1] = new BeatPattern(patternList2);
+            // I thought it listens to the next but it doesn't seem to. I'll save this for funky fresh mode
             //new ListenPattern(new List<(int, byte)>(), StageKitLightingPrimitives.ListenTypes.Next);
         }
 	}
@@ -522,8 +525,8 @@ namespace StageKitLighting {
         public ManualCool()
         {
             Start();
-            new ManualPattern((YELLOW,NONE));
-            new ManualPattern((RED,NONE));
+            StageKitLightingController.Instance.SetLed(YELLOW,NONE);
+            StageKitLightingController.Instance.SetLed(RED,NONE);
             var patternList1 = new List<(int, byte)>
             {
                 (BLUE, ZERO | FOUR),
@@ -531,7 +534,7 @@ namespace StageKitLighting {
                 (BLUE, TWO | SIX),
                 (BLUE, THREE | SEVEN),
             };
-            new BeatPattern(patternList1);
+            CuePrimitives[0] = new BeatPattern(patternList1);
 
             var patternList2 = new List<(int, byte)>
             {
@@ -545,7 +548,7 @@ namespace StageKitLighting {
                 (GREEN, THREE),
             };
 
-            new BeatPattern(patternList2);
+            CuePrimitives[1] = new BeatPattern(patternList2);
             //new ListenPattern(new List<(int, byte)>(), StageKitLightingPrimitives.ListenTypes.Next);
         }
 	}
@@ -574,7 +577,10 @@ namespace StageKitLighting {
 		protected override void HandleEvent(string eventName) {
 			if (eventName != "venue_lightFrame_next") return;
 			if (_anythingOn) {
-				SetAllLedsOff();
+                StageKitLightingController.Instance.SetLed(RED, NONE);
+                StageKitLightingController.Instance.SetLed(GREEN, NONE);
+                StageKitLightingController.Instance.SetLed(BLUE, NONE);
+                StageKitLightingController.Instance.SetLed(YELLOW, NONE);
             } else {
 				if (StageKitLightingController.Instance.largeVenue) {
                     StageKitLightingController.Instance.SetLed(BLUE, ALL);
@@ -594,14 +600,14 @@ namespace StageKitLighting {
 		private float _currentPitch;
         private bool _greenIsSpinning;
         private bool _blueOnTwo = true;
-        private StageKitLightingPrimitives _greenPattern;
+        private StageKitLighting _greenPattern;
         private byte _patternByte;
         private readonly List<(int, byte)> _patternList2;
 
 		public Dischord()
         {
             Start();
-			new ManualPattern((RED,NONE));
+			StageKitLightingController.Instance.SetLed(RED,NONE);
 			var patternList1 = new List<(int, byte)>
             {
                 (YELLOW, ZERO),
@@ -613,7 +619,7 @@ namespace StageKitLighting {
                 (YELLOW, SIX),
                 (YELLOW, SEVEN),
             };
-			new ListenPattern(patternList1, StageKitLightingPrimitives.ListenTypes.MajorBeat | StageKitLightingPrimitives.ListenTypes.MinorBeat);
+            CuePrimitives[0] = new ListenPattern(patternList1, ListenTypes.MajorBeat | ListenTypes.MinorBeat);
 
             _patternList2 = new List<(int, byte)>
             {
@@ -626,10 +632,10 @@ namespace StageKitLighting {
 				(GREEN, TWO),
 				(GREEN, ONE),
 			};
-            _greenPattern = new BeatPattern(_patternList2, true, 4.0f);
+            CuePrimitives[1] = new BeatPattern(_patternList2, true, 4.0f);
             _greenIsSpinning = true;
-            new ListenPattern(new List<(int, byte)> { (RED, ALL) }, StageKitLightingPrimitives.ListenTypes.RedFretDrums, true);
-            new ManualPattern((BLUE, TWO | SIX));
+            CuePrimitives[2] = new ListenPattern(new List<(int, byte)> { (RED, ALL) }, ListenTypes.RedFretDrums, true);
+            StageKitLightingController.Instance.SetLed(BLUE, TWO | SIX);
 
         }
 
@@ -639,12 +645,12 @@ namespace StageKitLighting {
             {
                 if (_blueOnTwo)
                 {
-                    new BeatPattern(new List<(int, byte)>{ (BLUE, NONE), (BLUE, ZERO | TWO | FOUR | SIX) }, false);
+                    CuePrimitives[3] = new BeatPattern(new List<(int, byte)>{ (BLUE, NONE), (BLUE, ZERO | TWO | FOUR | SIX) }, false);
                     _blueOnTwo = false;
                 }
                 else
                 {
-                    new BeatPattern(new List<(int, byte)>{ (BLUE, NONE), (BLUE, TWO | SIX) }, false);
+                    CuePrimitives[3] = new BeatPattern(new List<(int, byte)>{ (BLUE, NONE), (BLUE, TWO | SIX) }, false);
                     _blueOnTwo = true;
                 }
             }
@@ -653,11 +659,12 @@ namespace StageKitLighting {
             _greenPattern.Dispose();
             if (_greenIsSpinning)
             {
-                _greenPattern = new ManualPattern((GREEN, ALL));
+                CuePrimitives[1] = null;
+                StageKitLightingController.Instance.SetLed(GREEN, ALL);
             }
             else
             {
-                _greenPattern = new BeatPattern(_patternList2, true, 4.0f);
+                CuePrimitives[1] = new BeatPattern(_patternList2, true, 4.0f);
             }
             _greenIsSpinning = !_greenIsSpinning;
         }
@@ -668,18 +675,18 @@ namespace StageKitLighting {
         {
             List<(int, byte)> patternList1;
             Start();
-            new ManualPattern((GREEN, NONE));
-            new ManualPattern((RED, NONE));
-            new ManualPattern((YELLOW, NONE));
-            new ManualPattern((BLUE, NONE));
-            if  (StageKitLightingController.Instance.largeVenue == true)
+            StageKitLightingController.Instance.SetLed(GREEN, NONE);
+            StageKitLightingController.Instance.SetLed(RED, NONE);
+            StageKitLightingController.Instance.SetLed(YELLOW, NONE);
+            StageKitLightingController.Instance.SetLed(BLUE, NONE);
+            if  (StageKitLightingController.Instance.largeVenue)
             {
                 patternList1 = new List<(int, byte)>
                 {
                     (BLUE, ALL),
                     (RED, ALL),
                 } ;
-                new ManualPattern((YELLOW, NONE));
+                StageKitLightingController.Instance.SetLed(YELLOW, NONE);
             }
             else
             {
@@ -688,18 +695,18 @@ namespace StageKitLighting {
                     (RED, ALL),
                     (BLUE, ALL),
                 } ;
-                new ListenPattern(new List<(int, byte)>{(YELLOW, ALL)}, StageKitLightingPrimitives.ListenTypes.RedFretDrums, true,true);
+                CuePrimitives[0] = new ListenPattern(new List<(int, byte)>{(YELLOW, ALL)}, ListenTypes.RedFretDrums, true,true);
             }
-            new ListenPattern(patternList1, StageKitLightingPrimitives.ListenTypes.Next);
+            CuePrimitives[1] = new ListenPattern(patternList1, ListenTypes.Next);
         }
 	}
     internal class MenuLighting : StageKitLightingCues {
 		public MenuLighting()
         {
 			Start();
-            new ManualPattern((GREEN, NONE));
-            new ManualPattern((RED, NONE));
-            new ManualPattern((YELLOW, NONE));
+            StageKitLightingController.Instance.SetLed(GREEN, NONE);
+            StageKitLightingController.Instance.SetLed(RED, NONE);
+            StageKitLightingController.Instance.SetLed(YELLOW, NONE);
 			var patternList = new List<(int, byte)>
             {
 				(BLUE, ZERO),
@@ -711,7 +718,7 @@ namespace StageKitLighting {
 				(BLUE, SIX),
 				(BLUE, SEVEN),
 			} ;
-			new TimedPattern(patternList, 2f);
+            CuePrimitives[0] = new TimedPattern(patternList, 2f);
 		}
 	}
 	internal class ScoreLighting : StageKitLightingCues
@@ -720,7 +727,7 @@ namespace StageKitLighting {
         {
             List<(int, byte)> patternList1;
             Start();
-            new ManualPattern((GREEN, NONE));
+            StageKitLightingController.Instance.SetLed(GREEN, NONE);
             if  (StageKitLightingController.Instance.largeVenue)
             {
                 patternList1 = new List<(int, byte)>
@@ -730,7 +737,7 @@ namespace StageKitLighting {
                     (RED, ZERO | FOUR),
                     (RED, SEVEN | THREE),
                 };
-                new ManualPattern((BLUE, NONE));
+                StageKitLightingController.Instance.SetLed(BLUE, NONE);
             }
             else
             {
@@ -746,10 +753,10 @@ namespace StageKitLighting {
                     (BLUE, TWO),
                     (BLUE, ONE),
                 };
-                new ManualPattern((RED, NONE));
+                StageKitLightingController.Instance.SetLed(RED, NONE);
             }
 
-            new TimedPattern(patternList1, 1f);
+            CuePrimitives[0] = new TimedPattern(patternList1, 1f);
 
 			var patternList2 = new List<(int, byte)> {
                 (YELLOW, SIX | TWO),
@@ -757,7 +764,7 @@ namespace StageKitLighting {
                 (YELLOW, ZERO | FOUR),
                 (YELLOW, ONE | FIVE),
             };
-			new TimedPattern(patternList2, 2f);
+            CuePrimitives[1] = new TimedPattern(patternList2, 2f);
 		}
 	}
 }

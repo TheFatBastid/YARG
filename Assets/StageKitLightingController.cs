@@ -5,9 +5,9 @@ using PlasticBand.Haptics;
 using YARG.PlayMode;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using UnityEngine.UIElements;
 using YARG.Data;
 using YARG.Song;
+using YARG.UI;
 using YARG.UI.PlayResultScreen;
 using Random = UnityEngine.Random;
 
@@ -159,14 +159,12 @@ namespace StageKitLighting {
 			Fast,
 			Fastest
 		}
-
         private enum FogState
         {
 			Off = 0,
 			On = 1,
         }
-
-		public event Action<string> OnEventReceive;
+        public event Action<string> OnEventReceive;
         private bool _isSongPlaying;
         public bool largeVenue;
 		public byte[] currentLedState = { 0x00, 0x00, 0x00, 0x00 }; //blue, green, yellow, red
@@ -194,12 +192,11 @@ namespace StageKitLighting {
         private int _drumsChartIndex;
         public List<LyricInfo> VocalsChart;
         public int vocalsChartIndex;
-
-		private void ResultsScreenHandler(bool active)
+        private void ResultsScreenHandler(bool active)
         {
             if (active)
             {
-                new ScoreLighting();
+                CurrentLightingPattern = new ScoreLighting();
             }
             else
             {
@@ -207,23 +204,29 @@ namespace StageKitLighting {
             }
         }
 		//do stuff on song start
-		private void SongStartHandler(SongEntry songInfo)
+		private void SongStartHandler(SongEntry song)
         {
+            Debug.Log("Song start");
             OnEventReceive += TrackHandler;
 			_eventIndex = 0;
+            _drumsChartIndex = 0;
+            vocalsChartIndex = 0;
 			_isSongPlaying = true;
 			largeVenue = Random.Range(0, 2) != 0; //This should be read from the venue track eventually but right now let's just random it
 			_chart = Play.Instance.chart;
 			CurrentLightingPattern?.Dispose(true);
+            CurrentLightingPattern = null;
             StageKitHapticsManager.Reset();
 			_drumsChart = Play.Instance.chart.GetChartByName("drums")[3];
 			VocalsChart = Play.Instance.chart.realLyrics;
 		}
 		//do stuff on song end
-		private void SongEndHandler(SongEntry songInfo)
+		private void SongEndHandler(SongEntry song)
         {
+            Debug.Log("Song end");
 			_isSongPlaying = false;
 			CurrentLightingPattern?.Dispose(true);
+            CurrentLightingPattern = null;
             SetStrobeSpeed(StrobeSpeed.Off);
             SetFogMachine(FogState.Off);
 			OnEventReceive -= TrackHandler;
@@ -246,13 +249,20 @@ namespace StageKitLighting {
 			Instance = this;
 			//The kit remembers its last state which is neat but not needed on startup
 			StageKitHapticsManager.Reset();
-			new MenuLighting();
-			Play.OnSongStart += SongStartHandler;
+            CurrentLightingPattern = new MenuLighting();
+            Play.OnSongStart += SongStartHandler;
 			Play.OnSongEnd += SongEndHandler;
 			Play.OnPauseToggle += GamePauseHandler;
 			PlayResultScreen.OnEnabled += ResultsScreenHandler;
+            PauseMenu.OnPauseEvent += SongRestartHandler;
 		}
-		private void Update()
+        private void SongRestartHandler()
+        {
+            Debug.Log("Song restart");
+            SongEntry useless = null;
+            SongEndHandler(useless);
+        }
+        private void Update()
         {
             if (!_isSongPlaying) return;
             if (vocalsChartIndex < VocalsChart.Count - 1 && VocalsChart[vocalsChartIndex].time <= Play.Instance?.SongTime)
@@ -280,98 +290,114 @@ namespace StageKitLighting {
 		private void OnApplicationQuit() {
 			StageKitHapticsManager.Reset();
 		}
-
-		private void TrackHandler(string trackName) {
+        private void TrackHandler(string trackName) {
 			if (trackName.StartsWith("venue_")) {
 				HandleVenue(trackName);
 			}
 		}
-
-		private void HandleVenue(string lightingEvent)
+        private void HandleVenue(string lightingEvent)
         {
 		    switch (lightingEvent)
             {
                 //keyframed cues
                 case "venue_light_manual_warm":
-                    new ManualWarm();
+                    CurrentLightingPattern?.Dispose();
+                    CurrentLightingPattern = new ManualWarm();
                     break;
 
 			    case "venue_light_manual_cool":
-                    new ManualCool();
+                    CurrentLightingPattern?.Dispose();
+                    CurrentLightingPattern = new ManualCool();
 				    break;
 
 			    case "venue_light_dischord":
                     SetStrobeSpeed(StrobeSpeed.Off);
-				    new Dischord();
+                    CurrentLightingPattern?.Dispose();
+                    CurrentLightingPattern = new Dischord();
 				    break;
 
 			    case "venue_light_stomp":
                     SetStrobeSpeed(StrobeSpeed.Off);
-                    new Stomp();
+                    CurrentLightingPattern?.Dispose();
+                    CurrentLightingPattern = new Stomp();
 				    break;
 
 			    case "venue_light_default":
-				    new Default();
+                    CurrentLightingPattern?.Dispose();
+                    CurrentLightingPattern = new Default();
 				    break;
 
                 //continuous cues
                 case "venue_light_loop_warm":
+                    CurrentLightingPattern?.Dispose();
                     SetStrobeSpeed(StrobeSpeed.Off);
-                    new LoopWarm();
+                    CurrentLightingPattern = new LoopWarm();
                     break;
 
                 case "venue_light_loop_cool":
+                    CurrentLightingPattern?.Dispose();
                     SetStrobeSpeed(StrobeSpeed.Off);
-                    new LoopCool();
+                    CurrentLightingPattern = new LoopCool();
                     break;
 
                 case "venue_light_bre":
-                    new BigRockEnding();
+                    CurrentLightingPattern?.Dispose();
+                    CurrentLightingPattern = new BigRockEnding();
                     break;
 
 			    case "venue_light_searchlights":
+                    CurrentLightingPattern?.Dispose();
                     SetStrobeSpeed(StrobeSpeed.Off);
-				    new SearchLight();
+                    CurrentLightingPattern = new SearchLight();
 				    break;
 
 			    case "venue_light_frenzy":
-				    new Frenzy();
+                    CurrentLightingPattern?.Dispose();
+                    CurrentLightingPattern = new Frenzy();
 				    break;
 
                 case "venue_light_sweep":
-                    new Sweep();
+                    CurrentLightingPattern?.Dispose();
+                    CurrentLightingPattern = new Sweep();
                     break;
 
                 case "venue_light_harmony":
-                    new Harmony();
+                    CurrentLightingPattern?.Dispose();
+                    CurrentLightingPattern = new Harmony();
                     break;
 
                 //instant cues
                 case "venue_light_flare_slow":
-                    new FlareSlow();
+                    CurrentLightingPattern?.Dispose();
+                    CurrentLightingPattern = new FlareSlow();
                     break;
 
 			    case "venue_light_flare_fast":
-				    new FlareFast();
+                    CurrentLightingPattern?.Dispose();
+                    CurrentLightingPattern = new FlareFast();
 				    break;
 
 			    case "venue_light_silhouettes_spot":
-				    new SilhouetteSpot();
+                    CurrentLightingPattern?.Dispose();
+                    CurrentLightingPattern = new SilhouetteSpot();
 				    break;
 
 			    case "venue_light_silhouettes":
-                    new Silhouettes();
+                    CurrentLightingPattern?.Dispose();
+                    CurrentLightingPattern = new Silhouettes();
 				    break;
 
                 case "venue_light_blackout_spot":
                 case "venue_light_blackout_slow":
 			    case "venue_light_blackout_fast":
+                    CurrentLightingPattern?.Dispose();
                     SetStrobeSpeed(StrobeSpeed.Off);
-				    new Blackout();
+                    CurrentLightingPattern = new Blackout();
 				    break;
 
                 case "venue_light_intro":
-                    new Intro();
+                    CurrentLightingPattern?.Dispose();
+                    CurrentLightingPattern = new Intro();
                     break;
 
 			    //Fog machine cues
@@ -445,8 +471,7 @@ namespace StageKitLighting {
 				    break;
 		    }
 	    }
-
-        //Stagekit Queue stuff
+        //Stage kit Queue stuff
 		private void EnqueueCommand(int color, byte ledByte)
         {
 			CommandQueue.Enqueue((color, ledByte));
@@ -457,8 +482,7 @@ namespace StageKitLighting {
 
             SendCommands().Forget();
 		}
-
-		private async UniTask SendCommands()
+        private async UniTask SendCommands()
 		{
 			isSendingCommands = true;
             var things = CurrentLightingPattern;
@@ -510,13 +534,11 @@ namespace StageKitLighting {
 
 			isSendingCommands = false;
 		}
-
-		public void SetLed(int color, byte led)
+        public void SetLed(int color, byte led)
         {
 			currentLedState[color] = led;
 			EnqueueCommand(color, currentLedState[color]);
 		}
-
         private void SetFogMachine(FogState fogState)
         {
 			if (_currentFogState == fogState)
@@ -526,8 +548,7 @@ namespace StageKitLighting {
 			EnqueueCommand(4, (byte)fogState  );
 			_currentFogState = fogState;
 		}
-
-		internal void SetStrobeSpeed(StrobeSpeed strobeSpeed)
+        internal void SetStrobeSpeed(StrobeSpeed strobeSpeed)
         {
 			if (_currentStrobeState == strobeSpeed)
             {
@@ -563,7 +584,6 @@ namespace StageKitLighting {
 			}
 			_currentStrobeState = strobeSpeed;
 		}
-
-	}
+    }
 
 }

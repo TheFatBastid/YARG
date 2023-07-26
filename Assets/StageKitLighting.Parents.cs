@@ -1,10 +1,8 @@
 using System;
-using System.Collections.Generic;
 using System.Threading;
 
 namespace StageKitLighting{
-
-	public abstract class StageKitLighting {
+    public abstract class StageKitLighting : IDisposable {
 		protected const byte NONE  = 0b00000000;
 		protected const byte ZERO  = 0b00000001;
 		protected const byte ONE   = 0b00000010;
@@ -16,14 +14,40 @@ namespace StageKitLighting{
 		protected const byte SEVEN = 0b10000000;
 		protected const byte ALL   = 0b11111111;
 
-		protected bool Loop = true;
+        [Flags]
+        public enum ListenTypes {
+            None = 0,
+            Next = 1,
+            MajorBeat = 2,
+            MinorBeat = 4,
+            RedFretDrums = 8,
+            YellowFretDrums = 16,
+            BlueFretDrums = 32,
+            GreenFretDrums = 64,
+            KickFretDrums = 128,
+            RedFretBass = 256,
+            YellowFretBass = 512,
+            BlueFretBass = 1024,
+            GreenFretBass = 2048,
+            OrangeFretBass = 4096,
+        }
 
-        protected CancellationTokenSource CancellationTokenSource = new CancellationTokenSource();
+        protected CancellationTokenSource CancellationTokenSource;
 
-		protected virtual void HandleEvent(string eventName) {
+		protected virtual void HandleEvent(string eventName)
+        {
 
 		}
 
+        protected void Start() {
+            StageKitLightingController.Instance.OnEventReceive += HandleEvent;
+            CancellationTokenSource = new CancellationTokenSource();
+        }
+
+        public void Dispose() {
+            CancellationTokenSource?.Cancel();
+            StageKitLightingController.Instance.OnEventReceive -= HandleEvent;
+        }
 
 	}
 	public abstract class StageKitLightingCues : StageKitLighting{
@@ -33,67 +57,31 @@ namespace StageKitLighting{
 	    protected const int YELLOW = 2;
 	    protected const int RED = 3;
 
-	    public List<StageKitLightingPrimitives> LightingPrimitives = new List<StageKitLightingPrimitives>();
-	    protected void Start() {
-		    StageKitLightingController.Instance.OnEventReceive += HandleEvent;
-		    StageKitLightingController.Instance.CurrentLightingPattern?.Dispose();
-            StageKitLightingController.Instance.CurrentLightingPattern = this;
-		    CancellationTokenSource = new CancellationTokenSource();
-	    }
+        protected StageKitLighting[] CuePrimitives = new StageKitLighting[4];
 
-	    public void Dispose(bool turnOffLeds = false) {
-		    CancellationTokenSource?.Cancel();
-		    Loop = false;
-		    foreach (var primitive in LightingPrimitives) {
-			    primitive.Dispose();
-		    }
+        public void Dispose(bool turnOffLeds = false) {
+		    base.Dispose();
+            CancellationTokenSource?.Cancel();
 
-		    StageKitLightingController.Instance.CurrentLightingPattern = null;
-		    StageKitLightingController.Instance.OnEventReceive -= HandleEvent;
-		    if (turnOffLeds) {
-			    SetAllLedsOff();
-		    }
-	    }
+            CuePrimitives[0]?.Dispose();
+            CuePrimitives[0] = null;
 
-	    internal static void SetAllLedsOff() {
-		    //set all LEDS off
-		    StageKitLightingController.Instance.SetLed(RED, NONE);
-		    StageKitLightingController.Instance.SetLed(GREEN, NONE);
-		    StageKitLightingController.Instance.SetLed(BLUE, NONE);
-		    StageKitLightingController.Instance.SetLed(YELLOW, NONE);
-	    }
-	}
-	public abstract class StageKitLightingPrimitives : StageKitLighting{
-	    //This is the base class for all lighting primitives
+            CuePrimitives[1]?.Dispose();
+            CuePrimitives[1] = null;
 
-	    [Flags]
-	    public enum ListenTypes {
-		    None = 0,
-		    Next = 1,
-		    MajorBeat = 2,
-		    MinorBeat = 4,
-		    RedFretDrums = 8,
-		    YellowFretDrums = 16,
-		    BlueFretDrums = 32,
-		    GreenFretDrums = 64,
-		    KickFretDrums = 128,
-		    RedFretBass = 256,
-		    YellowFretBass = 512,
-		    BlueFretBass = 1024,
-		    GreenFretBass = 2048,
-		    OrangeFretBass = 4096,
-	    }
+            CuePrimitives[2]?.Dispose();
+            CuePrimitives[2] = null;
 
-        protected void Start() {
-		    StageKitLightingController.Instance.OnEventReceive += HandleEvent;
-		    StageKitLightingController.Instance.CurrentLightingPattern.LightingPrimitives.Add(this);
-		    CancellationTokenSource = new CancellationTokenSource();
-	    }
+            CuePrimitives[3]?.Dispose();
+            CuePrimitives[3] = null;
 
-	    public void Dispose() {
-		    CancellationTokenSource?.Cancel();
-		    Loop = false;
-		    StageKitLightingController.Instance.OnEventReceive -= HandleEvent;
-	    }
+            StageKitLightingController.Instance.OnEventReceive -= HandleEvent;
+
+            if (!turnOffLeds) return;
+            StageKitLightingController.Instance.SetLed(RED, NONE);
+            StageKitLightingController.Instance.SetLed(GREEN, NONE);
+            StageKitLightingController.Instance.SetLed(BLUE, NONE);
+            StageKitLightingController.Instance.SetLed(YELLOW, NONE);
+        }
     }
 }
